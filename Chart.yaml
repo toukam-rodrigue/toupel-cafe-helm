@@ -1,6 +1,6 @@
 apiVersion: v2
-name: transaction-service
-description: Spring Boot transaction service (DevOps demo) with Postgres, Actuator, Prometheus
+name: toupel-cafe-service
+description: Transaction service with Postgres, Actuator, Prometheus
 type: application
 version: 0.1.0
 appVersion: "0.0.1"

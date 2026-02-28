@@ -1,0 +1,111 @@
+# Image settings
+image:
+  repository: toupel-cafe-service
+  tag: "v1"
+  pullPolicy: IfNotPresent
+imagePullSecrets: []  # e.g., [{ name: my-registry-secret }]
+
+# Replica settings
+replicaCount: 2
+
+# Pod annotations (Prometheus scraping example)
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "8080"
+  prometheus.io/path: "/actuator/prometheus"
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+# Ingress configuration
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: demo.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+  # tls:
+  #   - secretName: demo-tls
+  #     hosts:
+  #       - demo.local
+
+# Resources
+resources:
+  requests:
+    cpu: "100m"
+    memory: "256Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+# Probes (paths are Actuator endpoints)
+probes:
+  liveness:
+    path: /actuator/health/liveness
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 2
+    failureThreshold: 3
+    successThreshold: 1
+  readiness:
+    path: /actuator/health/readiness
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 2
+    failureThreshold: 3
+    successThreshold: 1
+
+# Environment variables (static)
+env:
+  # Spring profile for runtime
+  - name: SPRING_PROFILES_ACTIVE
+    value: "dev"
+  # Optional toggle if you implemented the seeder by property
+  # - name: APP_SEED_ENABLED
+  #   value: "true"
+
+# Environment variables from ConfigMap & Secret
+envFrom:
+  configMapRef: true
+  secretRef: true
+
+# ConfigMap key-values (non-sensitive)
+config:
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://postgresql:5432/devopsdb"
+  SPRING_DATASOURCE_USERNAME: "postgres"
+  SERVER_PORT: "8080"
+  MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "health,info,prometheus"
+
+# Secret key-values (sensitive) — store plain values here; they are b64-encoded by the template
+secret:
+  SPRING_DATASOURCE_PASSWORD: "postgres"
+
+# HPA configuration
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  # targetCPUUtilizationPercentage or targetMemoryUtilizationPercentage
+  targetCPUUtilizationPercentage: 75
+  # targetMemoryUtilizationPercentage: 80
+
+# Scheduling (optional)
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Security context
+securityContext:
+  enabled: true
+  runAsUser: 10014
+  runAsGroup: 10014
+  fsGroup: 10014
+  runAsNonRoot: true
+  readOnlyRootFilesystem: false  # set true if your app doesn't write to filesystem
