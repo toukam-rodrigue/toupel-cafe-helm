@@ -66,7 +66,7 @@ probes:
 env:
   # Spring profile for runtime
   - name: SPRING_PROFILES_ACTIVE
-    value: "dev"
+    value: "default"
   # Optional toggle if you implemented the seeder by property
   # - name: APP_SEED_ENABLED
   #   value: "true"
@@ -78,14 +78,14 @@ envFrom:
 
 # ConfigMap key-values (non-sensitive)
 config:
-  SPRING_DATASOURCE_URL: "jdbc:postgresql://postgresql:5432/devopsdb"
-  SPRING_DATASOURCE_USERNAME: "postgres"
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://postgresql:5432/toupeldb"
+  SPRING_DATASOURCE_USERNAME: "pyramid_keno_user"
   SERVER_PORT: "8080"
   MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "health,info,prometheus"
 
 # Secret key-values (sensitive) — store plain values here; they are b64-encoded by the template
 secret:
-  SPRING_DATASOURCE_PASSWORD: "postgres"
+  SPRING_DATASOURCE_PASSWORD: "pyramid_keno_password"
 
 # HPA configuration
 autoscaling:
