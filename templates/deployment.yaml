@@ -50,12 +50,22 @@ spec:
             {{- if .Values.env }}
             {{- toYaml .Values.env | nindent 12 }}
             {{- end }}
+
+            # --- Inject DB password from secret (Bitnami or chart-generated) ---
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default (printf "%s-%s-secret" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-") .Values.secret.existingSecret }}
+                  key:  {{ default "SPRING_DATASOURCE_PASSWORD" .Values.secret.existingSecretKey }}
+            # -------------------------------------------------------------------
+
           envFrom:
             {{- if .Values.envFrom.configMapRef }}
             - configMapRef:
                 name: {{ printf "%s-%s-config" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-" }}
             {{- end }}
-            {{- if .Values.envFrom.secretRef }}
+            {{- /* Only use our chart-generated secret when there is no existingSecret configured */ -}}
+            {{- if and .Values.envFrom.secretRef (not .Values.secret.existingSecret) }}
             - secretRef:
                 name: {{ printf "%s-%s-secret" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-" }}
             {{- end }}
