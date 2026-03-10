@@ -78,10 +78,13 @@ envFrom:
 
 # ConfigMap key-values (non-sensitive)
 config:
-  SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-postgresql:5432/postgres"
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-postgresql:5432/toupeldb?currentSchema=toupel_shopping"
   SPRING_DATASOURCE_USERNAME: "postgres"
   SERVER_PORT: "8080"
   MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "health,info,prometheus"
+  SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
+
+  SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA: "toupel_shopping"
 
 # Secret key-values (sensitive) — store plain values here; they are b64-encoded by the template
 
